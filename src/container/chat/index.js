@@ -9,7 +9,7 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { globalStyle, color, appStyle } from "../../utility";
 import styles from "./styles";
@@ -143,13 +143,13 @@ const Chat = ({ route, navigation }) => {
                 onChangeText={(text) => handleOnChange(text)}
               />
               <View style={styles.sendBtnContainer}>
-                <Button
+                <MaterialCommunityIcons
                   name="camera"
                   color={color.WHITE}
                   size={appStyle.fieldHeight}
                   onPress={() => handleCamera()}
                 />
-                <Button
+                <MaterialCommunityIcons
                   name="send-circle"
                   color={color.WHITE}
                   size={appStyle.fieldHeight}

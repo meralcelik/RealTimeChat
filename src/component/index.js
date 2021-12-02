@@ -7,6 +7,8 @@ import ShowUsers from "./showUsers";
 import StickyHeader from "./stickyHeader";
 import ChatBox from "./chatBox";
 import FieldInput from "./fieldInput";
+import FlatListExample from "./FlatListExample";
+import HeaderButton from "./HeaderButton";
 
 export {
   RoundCornerButton,
@@ -18,4 +20,6 @@ export {
   StickyHeader,
   ChatBox,
   FieldInput,
+  FlatListExample,
+  HeaderButton
 };

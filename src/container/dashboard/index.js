@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from "react";
 import { SafeAreaView, Alert, Text, View, FlatList } from "react-native";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
+import * as ImagePicker from 'react-native-image-picker';
 import { Profile, ShowUsers, StickyHeader } from "../../component";
 import firebase from "../../firebase/config";
 import { color } from "../../utility";
@@ -11,15 +12,12 @@ import { uuid, smallDeviceHeight } from "../../utility/constants";
 import { clearAsyncStorage } from "../../asyncStorage";
 import { deviceHeight } from "../../utility/styleHelper/appStyle";
 import { UpdateUser, LogOutUser } from "../../network";
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-
-import HeaderButton from '../../component/HeaderButton/index';
 
 export default ({ navigation }) => {
-  
   const globalState = useContext(Store);
   const { dispatchLoaderAction } = globalState;
-
+  const [pickerResponse, setPickerResponse] = useState(null);
+  const [visible, setVisible] = useState(false);
   const [userDetail, setUserDetail] = useState({
     id: "",
     name: "",
@@ -30,19 +28,30 @@ export default ({ navigation }) => {
   const { profileImg, name } = userDetail;
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-     
-          <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item
-              title="Menu"
-              iconName="ios-menu"
-              onPress={() => {
-                navigation.toggleDrawer();
-              
-              }}
-            />
-          </HeaderButtons>
-        ),
+      headerRight: () => (
+        <SimpleLineIcons
+          name="logout"
+          size={26}
+          color={color.WHITE}
+          style={{ right: 10 }}
+          onPress={() =>
+            Alert.alert(
+              "Logout",
+              "Are you sure to log out",
+              [
+                {
+                  text: "Yes",
+                  onPress: () => logout(),
+                },
+                {
+                  text: "No",
+                },
+              ],
+              { cancelable: false }
+            )
+          }
+        />
+      ),
     });
   }, [navigation]);
 
@@ -94,19 +103,17 @@ export default ({ navigation }) => {
         skipBackup: true,
       },
     };
-
-    launchCamera(options, (response) => {
-      console.log("Response = ", response);
+    ImagePicker.launchCamera(options , response => {
+   
 
       if (response.didCancel) {
         console.log("User cancelled photo picker");
-      } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
-      } else if (response.customButton) {
-        console.log("User tapped custom button: ", response.customButton);
-      } else {
-        // Base 64oe image:
-        let source = "data:image/jpeg;base64," + response.data;
+      } else if (response.errorMessage) {
+        console.log("ImagePicker Error: ", response.errorMessage);
+      // } else if (response.assets) {
+      //   console.log("User tapped custom button: ", response.assets);
+      // } else {
+      //   let source = "data:image/jpeg;base64," + response.uri;
         dispatchLoaderAction({
           type: LOADING_START,
         });
@@ -130,17 +137,17 @@ export default ({ navigation }) => {
     });
   };
   // * LOG OUT
-  // const logout = () => {
-  //   LogOutUser()
-  //     .then(() => {
-  //       clearAsyncStorage()
-  //         .then(() => {
-  //           navigation.navigate("Login");
-  //         })
-  //         .catch((err) => console.log(err));
-  //     })
-  //     .catch((err) => alert(err));
-  // };
+  const logout = () => {
+    LogOutUser()
+      .then(() => {
+        clearAsyncStorage()
+          .then(() => {
+            navigation.replace("Login");
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => alert(err));
+  };
 
   // * ON IMAGE TAP
   const imgTap = (profileImg, name) => {

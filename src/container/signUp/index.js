@@ -68,7 +68,7 @@ export default ({ navigation }) => {
               dispatchLoaderAction({
                 type: LOADING_STOP,
               });
-              navigation.replace("Dashboard");
+              navigation.replace("Login");
             })
             .catch((err) => {
               dispatchLoaderAction({

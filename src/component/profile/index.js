@@ -4,6 +4,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import styles from "./styles";
 import { globalStyle, color } from "../../utility";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Button } from "react-native-paper";
 
 export default ({ img, name, onImgTap, onEditImgTap }) => (
   <View style={[globalStyle.sectionCentered, styles.container]}>
